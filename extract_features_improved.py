@@ -8,11 +8,19 @@ output_csv = "features_improved.csv"
 
 data = []
 
-for file in os.listdir(input_folder):
-    if file.endswith(".jpg") or file.endswith(".png"):
-        path = os.path.join(input_folder, file)
+for class_name in ["jaundice", "normal"]:
+
+    class_folder = os.path.join(input_folder, class_name)
+
+    for file in os.listdir(class_folder):
+
+        if not file.lower().endswith((".jpg",".jpeg",".png")):
+            continue
+
+        path = os.path.join(class_folder, file)
 
         img = cv2.imread(path)
+
         if img is None:
             continue
 
@@ -23,34 +31,56 @@ for file in os.listdir(input_folder):
         if len(pixels) == 0:
             continue
 
-        mean_r = np.mean(pixels[:, 2])
-        mean_g = np.mean(pixels[:, 1])
-        mean_b = np.mean(pixels[:, 0])
+        mean_r = np.mean(pixels[:,2])
+        mean_g = np.mean(pixels[:,1])
+        mean_b = np.mean(pixels[:,0])
 
-        # Convert to LAB
+
+        rg_ratio = mean_r / (mean_g + 1e-6)
+        rb_ratio = mean_r / (mean_b + 1e-6)
+        bg_ratio = mean_b / (mean_g + 1e-6)
+
+        # LAB color space
         lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
         lab_pixels = lab[mask]
 
-        mean_l = np.mean(lab_pixels[:, 0])
-        mean_a = np.mean(lab_pixels[:, 1])
-        mean_b_lab = np.mean(lab_pixels[:, 2])   # THIS IS IMPORTANT
+        mean_l = np.mean(lab_pixels[:,0])
+        mean_a = np.mean(lab_pixels[:,1])
+        mean_b_lab = np.mean(lab_pixels[:,2])
 
-        # Improved Yellow Index (LAB-based)
         yellow_index = mean_b_lab
 
         data.append([
-            file, mean_r, mean_g, mean_b,
-            mean_l, mean_a, mean_b_lab,
-            yellow_index
+            file,
+            mean_r,
+            mean_g,
+            mean_b,
+            mean_l,
+            mean_a,
+            mean_b_lab,
+            yellow_index,
+            rg_ratio,
+            rb_ratio,
+            bg_ratio
         ])
 
+
 columns = [
-    "image", "mean_r", "mean_g", "mean_b",
-    "mean_l", "mean_a", "mean_b_lab",
-    "yellow_index"
+    "image",
+    "mean_r",
+    "mean_g",
+    "mean_b",
+    "mean_l",
+    "mean_a",
+    "mean_b_lab",
+    "yellow_index",
+    "rg_ratio",
+    "rb_ratio",
+    "bg_ratio"
 ]
 
 df = pd.DataFrame(data, columns=columns)
+
 df.to_csv(output_csv, index=False)
 
 print("Saved:", output_csv)

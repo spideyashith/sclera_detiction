@@ -2,124 +2,107 @@ import cv2
 import numpy as np
 import os
 
+INPUT_DIR = "images"
+OUTPUT_DIR = "sclera_clean"
 
-# -----------------------------
-# FOLDERS
-# -----------------------------
-INPUT_DIR = "images_aug"
-OUTPUT_DIR = "sclera_clean_aug"
-
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(os.path.join(OUTPUT_DIR,"jaundice"), exist_ok=True)
+os.makedirs(os.path.join(OUTPUT_DIR,"normal"), exist_ok=True)
 
 
-# -----------------------------
-# MAIN FUNCTION
-# -----------------------------
 def extract_sclera(image_path, save_path):
 
     img = cv2.imread(image_path)
 
     if img is None:
-        print("❌ Cannot read:", image_path)
         return False
 
-
-    # Resize for consistency
-    img = cv2.resize(img, (256, 256))
+    img = cv2.resize(img,(256,256))
 
 
-    # Convert to HSV
+    # ---- convert color spaces ----
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
 
 
-    # -----------------------------
-    # SCLERA COLOR RANGE (TUNED)
-    # -----------------------------
-    lower = np.array([0, 10, 160])
-    upper = np.array([40, 120, 255])
-
-    mask = cv2.inRange(hsv, lower, upper)
+    h,s,v = cv2.split(hsv)
+    l,a,b = cv2.split(lab)
 
 
-    # -----------------------------
-    # MORPHOLOGY CLEANING
-    # -----------------------------
-    kernel = np.ones((5,5), np.uint8)
+    # ---- sclera conditions ----
+    bright = v > 160
+    low_sat = s < 60
+    lab_white = b > 130
+
+
+    mask = bright & low_sat & lab_white
+
+    mask = mask.astype(np.uint8)*255
+
+
+    # ---- remove iris ----
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    iris = gray < 70
+    mask[iris] = 0
+
+
+    # ---- morphology ----
+    kernel = np.ones((5,5),np.uint8)
 
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-    mask = cv2.medianBlur(mask, 7)
+    mask = cv2.medianBlur(mask,5)
 
 
-    # -----------------------------
-    # KEEP ONLY BIGGEST REGION
-    # -----------------------------
-    contours, _ = cv2.findContours(
-        mask,
-        cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_SIMPLE
-    )
+    # ---- contours ----
+    contours,_ = cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
-    if len(contours) == 0:
-        print("⚠️ No contour:", image_path)
+    if len(contours)==0:
         return False
 
 
-    largest = max(contours, key=cv2.contourArea)
+    contours = sorted(contours,key=cv2.contourArea,reverse=True)
 
-    clean_mask = np.zeros_like(mask)
-    cv2.drawContours(clean_mask, [largest], -1, 255, -1)
+    clean = np.zeros_like(mask)
+
+    for c in contours[:2]:
+        cv2.drawContours(clean,[c],-1,255,-1)
 
 
-    # -----------------------------
-    # REMOVE SMALL AREAS
-    # -----------------------------
-    area = cv2.countNonZero(clean_mask)
-
-    if area < 500:
-        print("⚠️ Too small area:", image_path)
+    if cv2.countNonZero(clean) < 200:
         return False
 
 
-    # -----------------------------
-    # APPLY MASK
-    # -----------------------------
-    sclera = cv2.bitwise_and(img, img, mask=clean_mask)
+    sclera = cv2.bitwise_and(img,img,mask=clean)
 
-
-    # -----------------------------
-    # SAVE
-    # -----------------------------
-    cv2.imwrite(save_path, sclera)
+    cv2.imwrite(save_path,sclera)
 
     return True
 
 
-
-# -----------------------------
-# PROCESS ALL IMAGES
-# -----------------------------
 success = 0
 fail = 0
 
 
-for file in os.listdir(INPUT_DIR):
+for label in ["jaundice","normal"]:
 
-    if not file.lower().endswith(".jpg"):
-        continue
+    folder = os.path.join(INPUT_DIR,label)
+
+    for file in os.listdir(folder):
+
+        if not file.lower().endswith((".jpg",".jpeg",".png")):
+            continue
+
+        in_path = os.path.join(folder,file)
+        out_path = os.path.join(OUTPUT_DIR,label,file)
+
+        ok = extract_sclera(in_path,out_path)
+
+        if ok:
+            success+=1
+        else:
+            fail+=1
 
 
-    in_path = os.path.join(INPUT_DIR, file)
-    out_path = os.path.join(OUTPUT_DIR, file)
-
-    ok = extract_sclera(in_path, out_path)
-
-    if ok:
-        success += 1
-    else:
-        fail += 1
-
-
-print("\n===== DONE =====")
-print("Success:", success)
-print("Failed :", fail)
+print("\nDONE")
+print("Success:",success)
+print("Failed:",fail)

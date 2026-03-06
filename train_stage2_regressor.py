@@ -1,32 +1,66 @@
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from xgboost import XGBRegressor
-import numpy as np
 
-df = pd.read_csv("final_dataset.csv")
+# -----------------------------
+# LOAD DATA
+# -----------------------------
+data = pd.read_csv("regression_dataset.csv")
 
-# Only jaundice cases
-df = df[df["jaundice"] == 1]
+# -----------------------------
+# FEATURES AND TARGET
+# -----------------------------
+X = data.drop(columns=["image", "bilirubin"])
+y = data["bilirubin"]
 
-X = df.drop(columns=["image", "bilirubin", "jaundice"])
-y = df["bilirubin"]
-
+# -----------------------------
+# TRAIN TEST SPLIT
+# -----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.25, random_state=42
+    X, y,
+    test_size=0.2,
+    random_state=42
 )
 
+# -----------------------------
+# MODEL
+# -----------------------------
 model = XGBRegressor(
-    n_estimators=300,
-    max_depth=4,
+    n_estimators=200,
     learning_rate=0.05,
+    max_depth=4,
+    subsample=0.8,
+    colsample_bytree=0.8,
     random_state=42
 )
 
 model.fit(X_train, y_train)
 
-y_pred = model.predict(X_test)
+# -----------------------------
+# PREDICTIONS
+# -----------------------------
+pred = model.predict(X_test)
 
-print("\n===== STAGE 2 RESULTS =====")
-print("MAE:", mean_absolute_error(y_test, y_pred))
-print("RMSE:", np.sqrt(mean_squared_error(y_test, y_pred)))
+# -----------------------------
+# METRICS
+# -----------------------------
+mae = mean_absolute_error(y_test, pred)
+rmse = np.sqrt(mean_squared_error(y_test, pred))
+
+print("\nRegression Results")
+print("-------------------")
+print("MAE :", round(mae,2))
+print("RMSE:", round(rmse,2))
+
+# -----------------------------
+# SHOW SAMPLE PREDICTIONS
+# -----------------------------
+results = pd.DataFrame({
+    "Actual": y_test,
+    "Predicted": pred
+})
+
+print("\nSample Predictions")
+print(results.head(10))

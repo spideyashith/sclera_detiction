@@ -1,12 +1,18 @@
 import pandas as pd
 
-df = pd.read_csv("dataset.csv")
+# Load features
+features = pd.read_csv("features_improved.csv")
 
-# Create binary target
-df["jaundice"] = (df["bilirubin"] > 1.2).astype(int)
+# Load labels
+labels = pd.read_csv("master_labels_final.csv")
 
-# Save clean dataset
-df.to_csv("final_dataset.csv", index=False)
+# Merge
+final_df = pd.merge(features, labels, on="image")
 
-print("Saved: final_dataset.csv")
-print(df["jaundice"].value_counts())
+# Save final dataset
+final_df.to_csv("final_dataset.csv", index=False)
+
+print("Final dataset created.")
+print("Total samples:", len(final_df))
+print("\nClass distribution:")
+print(final_df["label"].value_counts())
