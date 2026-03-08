@@ -1,26 +1,18 @@
-# Sclera Detection
+# Title
+
+[![Badges](link_to_badges)](link_to_badges)
 
 ## Project Overview
-This project aims to detect the sclera in eye images using advanced image processing techniques.
+Content goes here.
 
-## Features
-- Feature 1
-- Feature 2
+## Medical Background
+Content goes here.
 
-## Installation
-Follow the steps below to set up the project:
-1. Clone the repository.
-2. Install dependencies.
+## Methodology
+Content goes here.
 
-## Usage
-To use the project, run the following command:
+## Model Architecture
+Content goes here.
 
-```
-python main.py
-```
-
-## Contributing
-If you wish to contribute, please fork the repository and submit a pull request.
-
-## License
-This project is licensed under the MIT License.
+## Results
+Content goes here.
