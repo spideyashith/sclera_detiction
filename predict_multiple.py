@@ -3,9 +3,8 @@ import torch
 import numpy as np
 import joblib
 import pandas as pd
+import os
 import segmentation_models_pytorch as smp
-
-scaler = joblib.load("feature_scaler.pkl")
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -13,13 +12,9 @@ IMG_SIZE = 256
 
 MODEL_PATH = "sclera_segmentation_model.pth"
 
-# Load ML models
 classifier = joblib.load("jaundice_classifier.pkl")
 regressor = joblib.load("bilirubin_regressor.pkl")
 
-# -----------------------------
-# LOAD SEGMENTATION MODEL
-# -----------------------------
 seg_model = smp.Unet(
     encoder_name="resnet34",
     encoder_weights=None,
@@ -27,13 +22,10 @@ seg_model = smp.Unet(
     classes=1
 )
 
-seg_model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+seg_model.load_state_dict(torch.load(MODEL_PATH,map_location=DEVICE))
 seg_model.to(DEVICE)
 seg_model.eval()
 
-# -----------------------------
-# GRAY WORLD COLOR NORMALIZATION
-# -----------------------------
 def gray_world_normalization(img):
 
     img = img.astype(np.float32)
@@ -44,17 +36,14 @@ def gray_world_normalization(img):
 
     avg_gray = (avg_b + avg_g + avg_r) / 3
 
-    img[:,:,0] = img[:,:,0] * (avg_gray / avg_b)
-    img[:,:,1] = img[:,:,1] * (avg_gray / avg_g)
-    img[:,:,2] = img[:,:,2] * (avg_gray / avg_r)
+    img[:,:,0] *= avg_gray / avg_b
+    img[:,:,1] *= avg_gray / avg_g
+    img[:,:,2] *= avg_gray / avg_r
 
     img = np.clip(img,0,255)
 
     return img.astype(np.uint8)
 
-# -----------------------------
-# SEGMENT SCLERA
-# -----------------------------
 def segment_sclera(image):
 
     img = cv2.resize(image,(IMG_SIZE,IMG_SIZE))
@@ -71,14 +60,11 @@ def segment_sclera(image):
 
     pred = torch.sigmoid(pred).cpu().numpy()[0][0]
 
-    mask = (pred > 0.5).astype(np.uint8) * 255
+    mask = (pred>0.5).astype(np.uint8)*255
     mask = cv2.resize(mask,(image.shape[1],image.shape[0]))
 
     return mask
 
-# -----------------------------
-# FEATURE EXTRACTION
-# -----------------------------
 def extract_features(image,mask):
 
     sclera = cv2.bitwise_and(image,image,mask=mask)
@@ -116,42 +102,11 @@ def extract_features(image,mask):
     ]
 
     return np.array(features).reshape(1,-1)
+    print(features_df)
 
-# -----------------------------
-# VISUALIZATION
-# -----------------------------
-def overlay_mask(image,mask):
 
-    overlay = image.copy()
-    overlay[mask>0] = [0,255,0]
 
-    blended = cv2.addWeighted(image,0.7,overlay,0.3,0)
-
-    return blended
-
-# -----------------------------
-# TEST IMAGE
-# -----------------------------
-IMAGE_PATH = "jud_eye.jpg"
-
-image = cv2.imread(IMAGE_PATH)
-
-if image is None:
-    print("Image not found.")
-    exit()
-
-# Apply color normalization
-image = gray_world_normalization(image)
-
-# Segment sclera
-mask = segment_sclera(image)
-
-# Extract features
-features = extract_features(image,mask)
-
-if features is None:
-    print("Could not detect sclera")
-    exit()
+TEST_FOLDER = "test_images"
 
 feature_names = [
 "mean_r","mean_g","mean_b",
@@ -160,42 +115,37 @@ feature_names = [
 "yellow_index"
 ]
 
-features_df = pd.DataFrame(features,columns=feature_names)
+THRESHOLD = 0.70
 
-# -----------------------------
-# CLASSIFICATION
-# -----------------------------
-features_scaled = scaler.transform(features_df)
+for file in os.listdir(TEST_FOLDER):
 
-prob = classifier.predict_proba(features_scaled)[0][1]
+    path = os.path.join(TEST_FOLDER,file)
 
+    image = cv2.imread(path)
 
+    if image is None:
+        continue
 
-print("Jaundice Probability:",round(prob,3))
+    image = gray_world_normalization(image)
 
-THRESHOLD = 0.75
+    mask = segment_sclera(image)
 
-if prob < THRESHOLD:
+    features = extract_features(image,mask)
 
-    print("\nPrediction: NORMAL")
-    print("Estimated Bilirubin: < 2 mg/dL")
+    if features is None:
+        print(file,"→ sclera not detected")
+        continue
 
-else:
+    features_df = pd.DataFrame(features,columns=feature_names)
 
-    print("\nPrediction: JAUNDICE DETECTED")
+    prob = classifier.predict_proba(features_df)[0][1]
 
-    bilirubin = regressor.predict(features_scaled)[0]
-    
-    print("Estimated Bilirubin:",round(bilirubin,2),"mg/dL")
+    if prob < THRESHOLD:
 
-# -----------------------------
-# SAVE VISUALIZATION
-# -----------------------------
-overlay = overlay_mask(image,mask)
+        result = "NORMAL"
 
-cv2.imwrite("predicted_mask.png",mask)
-cv2.imwrite("sclera_overlay.png",overlay)
+    else:
 
-print("\nSaved:")
-print("predicted_mask.png")
-print("sclera_overlay.png")
+        result = "JAUNDICE"
+
+    print(file,"→",result,"| probability:",round(prob,3))
