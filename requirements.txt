@@ -1,6 +1,6 @@
 streamlit
 numpy
 pillow
-tensorflow
 opencv-python-headless
-scikit-learn
+tensorflow==2.15.0
+torch
