@@ -1,0 +1,72 @@
+Custom: AI-POWERED SPEECH AND TONE EMOTION DETECTION FOR HUMAN-COMPUTER INTERACTION
+Custom: CERTIFICATE OF AUTHENTICATED WORK
+Custom: AI-POWERED SPEECH AND TONE EMOTION DETECTION FOR HUMAN-COMPUTER INTERACTION
+Custom: ACKNOWLEDGEMENT
+Custom: DECLARATION
+Custom: PROJECT PROPOSAL REPORT / SYNOPSIS
+2: I. Title of the Project
+2: II. Statement of the Problem
+2: III. Why this particular topic chosen?
+2: IV. Objective and Scope
+2: V. Methodology
+2: VI. Process Description
+2: VII. Resources and Limitations
+2: VIII. Testing Technologies used
+2: IX. Conclusion
+Custom: ABSTRACT
+Custom: INDEX
+1: CHAPTER 1
+1: INTRODUCTION
+2: 1.1 OVERVIEW / BACKGROUND
+2: 1.2 PROBLEM STATEMENT
+2: 1.3 PROJECT OBJECTIVES
+2: 1.4 EXPECTED OUTCOMES
+2: 1.5 ORGANIZATION DETAILS
+1: CHAPTER 2
+1: LITERATURE REVIEW
+2: 2.1 Introduction
+2: 2.2 Emotion Theory in Speech
+2: 2.3 Audio Feature Extraction Techniques
+2: 2.4 Deep Learning Models in Audio Analysis
+2: 2.5 Real-Time Deployment Considerations
+2: 2.6 Analysis of Related Works and Research Gaps
+2: 2.7 Literature Comparison
+2: 2.8 Methodology Comparison
+1: CHAPTER 3
+1: MATERIALS, METHODS AND METHODOLOGY
+2: 3.1 Introduction
+2: 3.2 Data Sources & Format
+2: 3.3 Data Preprocessing & Augmentation
+2: 3.4 Feature Extraction (Detailed)
+3: 3.4.5 Implementation: Feature Extraction Code
+2: 3.5 Neural Network Architecture & Training
+3: 3.5.4 Implementation: CNN Architecture Code
+3: 3.5.5 Implementation: Dense Network Architecture Code
+3: 3.5.6 Implementation: Training Pipeline Code
+2: 3.6 Model Evaluation & Versioning
+3: 3.6.1 Implementation: Model Evaluator Code
+2: 3.7 Process Description (Inference Pipeline)
+3: 3.7.1 Implementation: FastAPI Endpoint Code
+3: 3.7.2 Implementation: WebSocket Endpoint Code
+3: 3.7.3 Implementation: Real-Time Prediction Code
+2: 3.8 Workflow Diagram
+2: 3.9 Hardware & Software Specifications
+1: CHAPTER 4
+1: RESULTS
+2: 4.1 Model Training Results
+2: 4.2 Feature Extraction Comparison
+2: 4.3 API Deployment Results
+2: 4.4 Real-Time Inference Results
+2: 4.5 Model Versioning Results
+2: 4.6 System Architecture Achievement
+2: 4.7 Training Performance Visualization
+2: 4.8 Model Accuracy Comparison
+2: 4.9 Confusion Matrix Analysis
+2: 4.10 Per-Emotion Performance Metrics
+2: 4.11 Implementation Screenshots
+1: CHAPTER 5
+1: CONCLUSION
+2: 5.1 SUMMARY
+2: 5.2 LIMITATIONS
+2: 5.3 FUTURE SCOPE
+1: REFERENCES

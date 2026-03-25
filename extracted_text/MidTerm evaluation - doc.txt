@@ -1,0 +1,635 @@
+Non-Invasive Estimation of Serum Bilirubin in Adults Using Scleral Image Analysis and Machine Learning
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chater 1
+
+Overview 
+
+Jaundice is a common medical condition caused by an increase in bilirubin levels in the blood. Bilirubin is a yellow pigment formed during the breakdown of red blood cells. When its concentration rises beyond normal levels, it leads to yellow discoloration of the skin and sclera (white part of the eye). Traditionally, jaundice is diagnosed through blood tests, which are invasive, time-consuming, and require laboratory facilities.
+
+In many rural or resource-limited settings, immediate blood testing may not be available. Therefore, there is a need for a non-invasive, fast, and cost-effective method to screen for jaundice.
+
+This project proposes a Non-Invasive Jaundice Detection System using Eye Sclera Images and Machine Learning. The idea is based on the medical fact that bilirubin accumulation first becomes visible in the sclera before it becomes prominent on the skin.
+
+
+
+The project bridges the gap between:
+
+Medical diagnosis
+
+Computer vision
+
+Machine learning
+
+Data analytics
+
+
+
+Instead of relying on subjective visual inspection by doctors, this system uses image processing techniques to extract sclera features and apply machine learning models to:
+
+Detect whether jaundice is present or not.
+
+Predict approximate bilirubin levels if jaundice is detected.
+
+
+
+This project is challenging because:
+
+Real medical datasets are limited.
+
+Sclera extraction is difficult due to lighting variations.
+
+Class imbalance exists between jaundice and non-jaundice samples.
+
+Accurate bilirubin prediction requires careful feature engineering.
+
+
+
+However, this project has strong practical relevance in:
+
+Early screening
+
+Remote health monitoring
+
+Telemedicine applications
+
+Mobile-based health diagnostics
+
+Future scope includes improving segmentation using deep learning models and building a mobile application for real-time screening.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Problem statement
+
+Jaundice diagnosis currently depends on laboratory blood tests to measure serum bilirubin levels. These tests are invasive, require medical infrastructure, and may not be immediately accessible in all locations.
+
+Although sclera yellowing is a visible symptom, manual observation is subjective and depends on human judgment. Lighting conditions and skin tone variations may affect visual assessment.
+
+
+
+The problem addressed in this project is:
+
+To develop a machine learning based system that can automatically detect jaundice from eye sclera images and estimate bilirubin levels without performing a blood test.
+
+
+
+The challenges involved include:
+
+Extracting sclera region accurately from eye images
+
+Handling noisy and imbalanced data
+
+Selecting meaningful color-based features
+
+Improving classification reliability
+
+Designing a two-stage model for better prediction performance
+
+This project aims to provide a screening tool, not a replacement for laboratory diagnosis.
+
+
+
+Project Objectives
+
+The main objectives of the project are:
+
+To collect and organize sclera image data from patients.
+
+To preprocess and clean the image dataset.
+
+To extract meaningful color-based features from the sclera region.
+
+To design a binary classification model to detect jaundice (Yes/No).
+
+To design a regression model to estimate bilirubin levels if jaundice is detected.
+
+To evaluate model performance using accuracy, ROC AUC, recall, MAE, and RMSE.
+
+To improve prediction reliability through feature engineering and threshold tuning.
+
+
+
+Expected Outcome
+
+A working two-stage machine learning pipeline
+
+Improved jaundice detection recall
+
+Approximate bilirubin level estimation
+
+A structured dataset ready for further research
+
+
+
+Organization details
+
+Institution: St Aloysius AI Research lab
+
+Department: School of Engineering
+
+Guide: Dr. Ruban S, Associate Professor & Dean
+
+
+
+
+
+
+
+
+
+
+
+Chapter 2: Literature Review
+
+2.1 Introduction
+
+The detection of jaundice through visual examination of sclera has been a common medical practice for decades. However, manual inspection depends heavily on physician experience and lighting conditions. With the advancement of image processing and machine learning, researchers have explored automated approaches for medical image-based diagnosis.
+
+Recent developments in computer vision have enabled the use of digital image analysis for detecting diseases such as anemia, diabetic retinopathy, liver disorders, and skin cancer. Particularly, sclera-based analysis has gained attention due to its early visible discoloration in jaundice cases.
+
+Machine learning techniques such as Support Vector Machines (SVM), Random Forest, Convolutional Neural Networks (CNN), and Gradient Boosting methods have been widely used in medical image classification tasks.
+
+This chapter reviews previous research work related to:
+
+Jaundice detection using image processing
+
+Sclera segmentation techniques
+
+Color-based feature extraction methods
+
+Machine learning models used in medical diagnosis
+
+Two-stage classification and regression approaches
+
+The purpose of this review is to understand current progress, identify limitations, and justify the need for the proposed system
+
+2.2 Details of literature review
+
+2.2.1 Image-Based Jaundice Detection
+
+Several researchers have attempted non-invasive bilirubin estimation using smartphone images. Studies have used skin color analysis and sclera-based color evaluation to estimate bilirubin concentration.
+
+One approach involved capturing newborn images and analyzing skin color variations using RGB channels. However, skin tone variation across individuals significantly affected accuracy. Therefore, sclera-based methods were later preferred because sclera color is more uniform across individuals.
+
+Another study used sclera segmentation combined with color normalization techniques to improve robustness. The results showed moderate accuracy but were affected by lighting inconsistencies.
+
+Limitations observed:
+
+Small datasets
+
+Poor lighting control
+
+Limited generalization ability
+
+Lack of clinical validation
+
+
+
+2.2.2 Sclera Segmentation Techniques
+
+Accurate segmentation of the sclera region is critical for reliable feature extraction.
+
+Researchers have used:
+
+HSV thresholding
+
+Otsu’s thresholding
+
+Edge detection techniques
+
+Morphological operations
+
+Deep learning models like U-Net and YOLO
+
+Traditional thresholding methods are simple and computationally efficient but sensitive to lighting conditions.
+
+Deep learning-based segmentation provides higher accuracy but requires large annotated datasets and high computational resources.
+
+In many low-resource settings, classical segmentation techniques remain practical due to simplicity and speed.
+
+
+
+2.2.3 Color Feature Engineering in Medical Images
+
+Color-based feature extraction is widely used in medical image analysis.
+
+Common features include:
+
+Mean RGB values
+
+HSV components
+
+LAB color space features
+
+Color ratios
+
+Texture features like entropy
+
+Research shows that LAB color space is more perceptually uniform and better suited for color discrimination tasks.
+
+Particularly, the LAB “b” channel (yellow-blue axis) is effective for detecting yellow pigmentation associated with jaundice.
+
+However, most existing works focus either on classification or regression, but not both combined in a structured two-stage framework.
+
+
+
+
+
+
+
+
+
+2.2.4 Machine Learning Models in Disease Detection
+
+Various machine learning algorithms have been applied in medical diagnostics:
+
+Logistic Regression
+
+Support Vector Machine (SVM)
+
+Random Forest
+
+Gradient Boosting
+
+XGBoost
+
+Convolutional Neural Networks (CNN)
+
+Tree-based models such as Random Forest and XGBoost are popular due to:
+
+Handling non-linearity
+
+Robustness to noise
+
+Feature importance interpretation
+
+Strong performance on structured datasets
+
+In many comparative studies, XGBoost demonstrated superior accuracy and better generalization capability.
+
+However, model performance heavily depends on dataset quality and balance.
+
+2.2.5 Data Imbalance in Medical Datasets
+
+Medical datasets often suffer from class imbalance, where positive cases are fewer than normal cases or vice versa.
+
+Techniques used to address imbalance include:
+
+Oversampling
+
+Undersampling
+
+SMOTE (Synthetic Minority Oversampling Technique)
+
+Threshold tuning
+
+Studies indicate that recall is more important than accuracy in medical screening systems because missing positive cases can be critical.
+
+Therefore, evaluation metrics such as ROC AUC and Recall are often preferred over plain accuracy.
+
+
+
+
+
+
+
+
+
+
+
+2.3 Analysis of related works
+
+Based on the reviewed literature, the following observations can be made:
+
+Paper Focus
+
+Method Used
+
+Advantages
+
+Limitations
+
+Skin-based bilirubin detection
+
+RGB analysis
+
+Simple implementation
+
+Skin tone variation affects accuracy
+
+Sclera-based color analysis
+
+HSV thresholding
+
+More reliable than skin
+
+Lighting sensitive
+
+Deep learning segmentation
+
+CNN / U-Net
+
+High segmentation accuracy
+
+Requires large dataset
+
+ML classification models
+
+SVM, RF, XGBoost
+
+Good classification results
+
+Limited regression focus
+
+Smartphone-based screening
+
+Mobile camera + ML
+
+Portable
+
+Clinical validation limited
+
+
+
+Identified Research Gaps
+
+Most systems focus only on classification and not bilirubin estimation.
+
+Few studies implement a structured two-stage architecture.
+
+Many approaches lack detailed feature importance analysis.
+
+Limited datasets reduce generalization ability.
+
+Few works address threshold tuning in medical screening context.
+
+
+
+Justification for Proposed Work
+
+The proposed project addresses these gaps by:
+
+Implementing a two-stage architecture (classification + regression)
+
+Using sclera-based segmentation
+
+Incorporating LAB color space features
+
+Applying class balancing techniques
+
+Evaluating both detection and estimation performance
+
+This makes the system more structured and suitable for screening applications.
+
+
+
+
+
+Chapter 3: Methodology
+
+3.1 Introduction
+
+This chapter explains the complete methodology used to design and implement the proposed system: Non-Invasive Jaundice Detection using Eye Sclera Images and Machine Learning.
+
+The project follows a structured data science approach consisting of:
+
+Data Collection
+
+Sclera Extraction
+
+Feature Engineering
+
+Stage 1 – Jaundice Classification
+
+Stage 2 – Bilirubin Level Regression
+
+Performance Evaluation
+
+A two-stage machine learning architecture is adopted:
+
+Stage 1: Binary classification (Jaundice / No Jaundice)
+
+Stage 2: Bilirubin level prediction (only if jaundice detected)
+
+This approach ensures efficient and medically meaningful prediction.
+
+3.2 Data Sources & Format
+
+3.2.1 Data Collection
+
+36 patients included in the study
+
+126+ real sclera eye images collected
+
+Augmented dataset: 211 samples
+
+Each image linked with actual serum bilirubin value
+
+Images were collected in RGB format and stored in JPG format.
+
+3.2.2 Data Variables
+
+Each processed image includes the following extracted features:
+
+Mean Red (R)
+
+Mean Green (G)
+
+Mean Blue (B)
+
+Mean Hue (H)
+
+Mean Saturation (S)
+
+Mean Value (V)
+
+Entropy
+
+Yellow Index (LAB-based)
+
+Bilirubin Value (Target Variable)
+
+Jaundice Label (0 = No, 1 = Yes)
+
+3.2.3 Ethical Considerations
+
+Images used strictly for academic research.
+
+No personal patient identity stored.
+
+Only bilirubin values used for prediction.
+
+3.2.4 Acknowledgement
+
+I sincerely express my gratitude to my project guide for their continuous encouragement, constructive feedback, and expert guidance throughout the course of this research work. 
+
+I also thank the Department for providing the necessary facilities and academic support required for conducting this study.
+
+I would like to acknowledge Father Muller Medical College Hospital for granting permission to use the clinical data required for this research. Their cooperation was invaluable to this work.
+
+3.3 Data Preprocessing – Extraction & preparation
+
+Data preprocessing was a critical step in improving model accuracy.
+
+3.3.1 Sclera Extraction
+
+To focus only on the white region of the eye:
+
+Converted image to HSV color space
+
+Applied thresholding to isolate sclera
+
+Used morphological operations to clean noise
+
+Removed small unwanted regions
+
+Final mask extracted sclera region only
+
+This removes eyelashes, iris, and background noise.
+
+3.3.2 Data Cleaning
+
+Removed images with very small sclera area
+
+Removed corrupted images
+
+Checked for NaN values
+
+Ensured correct mapping of image to bilirubin
+
+3.3.3 Data Augmentation
+
+To increase dataset size:
+
+Horizontal flipping
+
+Slight brightness adjustment
+
+Small rotation
+
+Zooming
+
+Final dataset size: 211 samples.
+
+3.3.4 Feature Engineering
+
+Two types of features were extracted:
+
+1. Color-Based Features
+
+RGB Mean
+
+HSV Components
+
+LAB-based Yellow Index
+
+Yellow Index was found to be the most important feature.
+
+2. Texture Feature
+
+Entropy (measures irregularity in pixel distribution)
+
+
+
+3.4 Data Exploration & analysis
+
+Exploratory Data Analysis was performed:
+
+Distribution of bilirubin values
+
+Class imbalance analysis
+
+Feature correlation
+
+Yellow index vs bilirubin relationship
+
+Observations:
+
+Dataset was imbalanced (more jaundice cases)
+
+Yellow Index strongly correlated with bilirubin
+
+SMOTE applied to balance classification dataset
+
+3.5 Process Description
+
+The system works in the following sequence:
+
+Input Eye Image
+
+Extract Sclera Region
+
+Extract Features
+
+Stage 1: Predict Jaundice (Yes/No)
+
+If Yes → Stage 2: Predict Bilirubin Level
+
+Display Result
+
+This ensures that bilirubin regression runs only when required.
+
+3.6 Workflow diagram
+
+The workflow diagram illustrates the complete pipeline of the proposed system. The raw eye image is first processed for sclera extraction using HSV thresholding. Extracted sclera region is used for feature extraction including RGB, HSV, entropy, and Yellow Index. The features are then passed into Stage 1 classifier (XGBoost) to determine whether jaundice is present. If jaundice is detected, Stage 2 regression model estimates the approximate bilirubin level.
+
+3.7 Hardware & Software specifications
+
+Software Used
+
+Python 3.12
+
+OpenCV
+
+NumPy
+
+Pandas
+
+Scikit-learn
+
+XGBoost
+
+Matplotlib
+
+Hardware Used
+
+Processor: Intel i5
+
+RAM: 8GB
+
+Storage: 512GB SSD
+
+OS: Windows 11

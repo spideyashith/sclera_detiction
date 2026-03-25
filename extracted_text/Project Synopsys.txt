@@ -1,0 +1,179 @@
+Project Proposal Report / Synopsis
+
+for
+
+Non-Invasive Estimation of Serum Bilirubin in Adults Using Scleral Image Analysis and Machine Learning
+
+Ashith Joswa Fernandes
+
+24251106
+
+Msc Software Technology
+
+St Aloysius College (Deemed to Be University)
+
+Mangalore
+
+21/01/2026
+
+
+
+
+
+Under the guidance of
+
+Dr. Ruban S
+
+Dean and Associate Professor, School of Engineering
+
+St Aloysius College (Deemed to Be University)
+
+Mangalore
+
+
+
+
+
+Submitted to
+
+
+
+
+
+ALOYSIUS INSTITUTE OF MANAGEMNT AND INFORMATION TECHNOLOGY (AIMIT)
+
+ST. ALOYSIUS DEEMED TO BE UNIVERSITY
+
+MANGALORE, KARNATAKA
+
+
+
+	Title of the Project
+
+Non-Invasive Estimation of Serum Bilirubin in Adults Using Scleral Image Analysis and Machine Learning
+
+	Statement of the Problem
+
+Serum bilirubin is an important biochemical marker used in diagnosing and monitoring liver-related disorders such as jaundice. Conventional bilirubin estimation methods require invasive blood sampling, which can be uncomfortable, time-consuming, and unsuitable for frequent monitoring.
+
+Clinical observations show that elevated bilirubin levels cause visible yellowing of the sclera (white part of the eye), a condition known as scleral icterus. With recent advances in image processing and machine learning, it is possible to analyze scleral color information from eye images to estimate bilirubin levels in a non-invasive manner.
+
+The problem addressed in this project is the absence of a simple, explainable, and non-invasive computational approach for estimating serum bilirubin using eye images while ensuring ethical safety, interpretability, and feasibility for real-world screening applications.
+
+
+
+	Why this particular topic chosen?
+
+This topic was chosen due to its strong relevance to modern healthcare and artificial intelligence applications. Non-invasive diagnostic techniques are increasingly important for early screening and continuous monitoring. The project integrates concepts from image processing, machine learning, and medical signal analysis, offering an interdisciplinary learning opportunity.
+
+The problem is socially significant as it aims to reduce dependency on invasive procedures for preliminary assessment. Additionally, the project provides scope for innovation through feature engineering, segmentation techniques, and future deployment in mobile or telemedicine platforms.
+
+
+
+	Objective and Scope
+
+	Objectives
+
+	To develop a non-invasive approach for estimating serum bilirubin levels using eye images.
+
+	To isolate the scleral region using image processing techniques.
+
+	To extract color-based scleral features relevant to bilirubin estimation.
+
+	To apply machine learning regression models for bilirubin prediction.
+
+	To design a simple frontend interface to demonstrate system functionality.
+
+	
+
+	Scope
+
+	The scope of the project is limited to adult eye images and scleral region analysis. The system is intended as a prototype and feasibility study for screening and monitoring purposes only. It does not replace laboratory blood tests or clinical diagnosis. Large-scale clinical validation is beyond the scope of the current implementation.
+
+
+
+	Methodology
+
+	The project follows a structured and modular methodology:
+
+	Image Acquisition
+Eye images are collected from ethically approved and anonymized patient data.
+
+	
+
+	Preprocessing
+Images are resized and converted into suitable color spaces for analysis.
+
+	
+
+	Sclera Segmentation
+HSV-based color thresholding is applied to isolate the scleral region by identifying low-saturation and high-brightness areas.
+
+	
+
+	Feature Extraction
+Color features such as mean RGB values and Yellow Index are extracted from the segmented sclera.
+
+	
+
+	Machine Learning Model
+Regression models including Linear Regression and Random Forest are trained using scleral features and corresponding serum bilirubin values.
+
+	
+
+	Frontend Demonstration
+A Streamlit-based frontend allows users to upload eye images, visualize sclera extraction, and view estimated bilirubin values with appropriate disclaimers.
+
+
+
+	Process Description
+
+	The system accepts an eye image as input through the frontend interface. The image undergoes preprocessing and sclera segmentation. Relevant color features are extracted from the scleral region and passed to a trained regression model. The model estimates the serum bilirubin value, which is displayed to the user along with a warning that the output is for research and screening purposes only.
+
+	
+
+	Resources and Limitations
+
+	Resources
+
+	Hardware: Personal Computer
+
+	Software: Python, OpenCV, Scikit-Learn, Streamlit
+
+	Operating System: Windows 
+
+	Libraries: NumPy, Pandas, Matplotlib
+
+	
+
+	Limitations
+
+	Performance depends on image quality and lighting conditions.
+
+	Limited dataset size restricts generalization.
+
+	Manual thresholding is sensitive to illumination changes.
+
+	The system does not replace laboratory blood tests or clinical diagnosis.
+
+
+
+
+
+
+
+	Testing Technologies used
+
+Unit Testing: Validation of individual modules such as segmentation and feature extraction.
+
+System Testing: End-to-end testing of the image-to-prediction pipeline.
+
+User Interface Testing: Validation of frontend interaction and display.
+
+
+
+Regression performance is evaluated using Mean Absolute Error (MAE) and Root Mean Square Error (RMSE).
+
+	Conclusion
+
+	This project demonstrates the feasibility of estimating serum bilirubin levels using scleral image analysis and machine learning in a non-invasive manner. The developed prototype integrates image processing, feature extraction, regression modeling, and frontend visualization into a unified system. While the current implementation serves as a validated feasibility study, it establishes a strong foundation for future clinical validation and system enhancement.
